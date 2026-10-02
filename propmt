@@ -1,0 +1,43 @@
+cris un script Python de vision par ordinateur pour traiter un lot de 4 images. Utilise numpy, matplotlib.pyplot, PIL.Image et scipy.signal.convolve2d.
+
+Règles strictes de notation : Tu dois inclure des docstrings Python très détaillées pour chaque fonction (avec 'Args:' et 'Returns:') et ajouter des commentaires clairs au-dessus de chaque bloc logique.
+
+Le script doit contenir :
+
+get_object_position(img, nom_fichier) : Affiche l'image en niveaux de gris, affiche le titre avec nom_fichier, demande 2 clics avec plt.ginput(2, timeout=-1), ferme la figure et retourne les deux points.
+
+create_gaussian_kernel(size=5, sigma=1.5) : Crée un noyau gaussien 2D normalisé avec np.meshgrid.
+
+process_image(img_path) :
+
+Charge l'image en ('L'). Gère le FileNotFoundError.
+
+Pivote l'image de 45° (expand=False) pour simuler l'exercice.
+
+Appelle get_object_position sur l'image penchée.
+
+Calcule l'angle angle_degrees = np.degrees(np.arctan2(dy, dx)).
+
+Redresse l'image en appliquant une rotation de angle_degrees (PAS de signe négatif).
+
+Construit une matrice de rotation 2D (theta = np.radians(-angle_degrees)) centrée sur l'image pour retrouver les nouvelles coordonnées des 2 points cliqués.
+
+Calcule le centre (cx, cy) entre ces points et la distance (scale).
+
+Applique un crop avec la bounding box : (cx - 1 * scale, cy - 0.5 * scale, cx + 1 * scale, cy + 0.5 * scale).
+
+Redimensionne à (800, 400) avec Image.Resampling.LANCZOS.
+
+Applique un Unsharp Mask avec convolve2d et create_gaussian_kernel. Multiplicateur de netteté = 3.0. Fait un np.clip (0, 255) et cast en uint8.
+
+Retourne uniquement l'image finale nette.
+
+Un bloc if __name__ == "__main__": :
+
+Crée une liste de fichiers: ["plane1.jpg", "plane2.jpg", "plane3.jpg", "plane4.jpg"].
+
+Fait une boucle for pour appeler process_image sur chaque fichier et stocke les images retournées dans une liste.
+
+Après la boucle, crée une figure contenant une grille 2x2 subplots avec plt.subplots(2, 2, figsize=(14, 8)).
+
+Affiche les 4 images traitées dans les 4 cases de la grille avec cmap='gray', vmin=0, vmax=255, et interpolation='nearest'. Enlève les axes avec axis("off")
